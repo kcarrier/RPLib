@@ -1,0 +1,289 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Email Variables &mdash; RPLib 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="RPLib 1.0 documentation" href="index.html" />
+    <link rel="next" title="Logging Variables" href="loggingvariables.html" />
+    <link rel="prev" title="Welcome to RPLib documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="loggingvariables.html" title="Logging Variables"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to RPLib documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">RPLib 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="email-variables">
+<h1>Email Variables<a class="headerlink" href="#email-variables" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div><p><strong>Parameters that can be specified for sending emails.</strong>
+<strong>All parameters are not required by default because it will depend on how your email server is configured, please consult your email administrator.</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="5%" />
+<col width="80%" />
+<col width="5%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+<th class="head">Required</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>email_ON</strong></td>
+<td>Boolean</td>
+<td><p class="first">Indicates if emails will be sent when functions fail.</p>
+<ul class="last simple">
+<li>True = Emails will be sent.</li>
+<li>False = Emails will not be sent. <strong>(Default)</strong></li>
+<li><strong>Note if using reconcilepost function an email will be sent if the function fails or succeeds when email_ON is set to True.</strong></li>
+</ul>
+</td>
+<td>No</td>
+</tr>
+<tr class="row-odd"><td><strong>email_To</strong></td>
+<td>List</td>
+<td>Who the email will be sent to. e.g., (&#8220;<a class="reference external" href="mailto:jonedoe&#37;&#52;&#48;server&#46;com">jonedoe<span>&#64;</span>server<span>&#46;</span>com</a>&#8221;,&#8221;<a class="reference external" href="mailto:janedoe&#37;&#52;&#48;server&#46;com">janedoe<span>&#64;</span>server<span>&#46;</span>com</a>&#8221;) always include the comma even if only 1 name is used.</td>
+<td>No</td>
+</tr>
+<tr class="row-even"><td><strong>email_From</strong></td>
+<td>String</td>
+<td>Who the email will be sent from. e.g., &#8220;<a class="reference external" href="mailto:janesmith&#37;&#52;&#48;server&#46;com">janesmith<span>&#64;</span>server<span>&#46;</span>com</a>&#8220;</td>
+<td>No</td>
+</tr>
+<tr class="row-odd"><td><strong>email_Subject</strong></td>
+<td>String</td>
+<td>The subject of the email to be sent.</td>
+<td>No</td>
+</tr>
+<tr class="row-even"><td><strong>email_Msg</strong></td>
+<td>String</td>
+<td>The body of the email</td>
+<td>No</td>
+</tr>
+<tr class="row-odd"><td><strong>email_IP</strong></td>
+<td>String</td>
+<td>Indicates the ip address or name of your mail server, this can be local or remote depending on your IT policies.</td>
+<td>No</td>
+</tr>
+<tr class="row-even"><td><strong>email_Port</strong></td>
+<td>String</td>
+<td><p class="first">Specify the port used for sending emails.</p>
+<ul class="last simple">
+<li>Typically the port for an SMTP server is 25.</li>
+<li>Some Exchange or Outlook servers also use 587.</li>
+</ul>
+</td>
+<td>No</td>
+</tr>
+<tr class="row-odd"><td><strong>email_Username</strong></td>
+<td>String</td>
+<td><p class="first">If authentication is required specify username here.</p>
+<ul class="last simple">
+<li>If a domain is required remember one backslash in python is equivalent to an escape so try something like <strong>domain\\username</strong>.</li>
+</ul>
+</td>
+<td>No</td>
+</tr>
+<tr class="row-even"><td><strong>email_Password</strong></td>
+<td>String</td>
+<td>Specify the password associated with the username.</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>Email notifications can be helpful when automating processes to let you know when things fail or succeed.</strong></p>
+</li>
+<li><p class="first"><strong>If the email_ON option is set to True and all other necessary paramters are correct, you will only receive emails when functions fail.</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><strong>The exception to this rule is the reconcilepost function, which will send an email if the function fails or succeeds.</strong></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><strong>Each function has email capabilities built in and will include the error message encountered.</strong></p>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="example-1">
+<h2>Example 1<a class="headerlink" href="#example-1" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><strong>Simple call to send emails with required parameters specified.</strong></li>
+<li><strong>Notice we are only specifying credentials for the email server, we are not actually sending emails.</strong></li>
+<li><strong>If the clearworkspacecache function failed then johndoe and janedoe would get an email from janesmith indicating this function threw an error in the Subject and the Body of the email would contain the error message.</strong></li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">RPLib</span>
+
+<span class="n">RPLib</span><span class="o">.</span><span class="n">email_ON</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">RPLib</span><span class="o">.</span><span class="n">email_To</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;jonedoe@server.com&quot;</span><span class="p">,</span><span class="s">&quot;janedoe@server.com&quot;</span><span class="p">)</span>
+<span class="n">RPLib</span><span class="o">.</span><span class="n">email_From</span> <span class="o">=</span> <span class="s">&quot;janesmith@server.com&quot;</span>
+<span class="n">RPLib</span><span class="o">.</span><span class="n">email_IP</span> <span class="o">=</span> <span class="s">&quot;10.1.1.1&quot;</span>
+<span class="n">RPLib</span><span class="o">.</span><span class="n">email_Port</span> <span class="o">=</span> <span class="s">&quot;25&quot;</span>
+<span class="n">RPLib</span><span class="o">.</span><span class="n">email_Username</span> <span class="o">=</span> <span class="s">&quot;janesmith&quot;</span> <span class="c"># if domain is required try domain\\janesmith</span>
+<span class="n">RPLib</span><span class="o">.</span><span class="n">email_Password</span> <span class="o">=</span> <span class="s">&quot;password&quot;</span>
+
+<span class="n">dataOwner</span> <span class="o">=</span> <span class="s">&quot;C:/GIS/GISADMIN@GIS.sde&quot;</span>
+
+<span class="n">RPLib</span><span class="o">.</span><span class="n">clearworkspacecache</span><span class="p">(</span><span class="n">dataOwner</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="example-2">
+<h2>Example 2<a class="headerlink" href="#example-2" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><strong>Simple call to send emails with required parameters specified and user specified Subject and Msg.</strong></li>
+<li><strong>Notice we are sending our own messages outside of the RPLib functions error handling.</strong></li>
+<li><strong>In this example we want to know when the process begins and ends.</strong></li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">RPLib</span>
+
+<span class="n">RPLib</span><span class="o">.</span><span class="n">email_ON</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">RPLib</span><span class="o">.</span><span class="n">email_To</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;jonedoe@server.com&quot;</span><span class="p">,</span><span class="s">&quot;janedoe@server.com&quot;</span><span class="p">)</span>
+<span class="n">RPLib</span><span class="o">.</span><span class="n">email_From</span> <span class="o">=</span> <span class="s">&quot;yournamehere@gmail.com&quot;</span>
+<span class="n">RPLib</span><span class="o">.</span><span class="n">email_IP</span> <span class="o">=</span> <span class="s">&quot;smtp.gmail.com&quot;</span>
+<span class="n">RPLib</span><span class="o">.</span><span class="n">email_Port</span> <span class="o">=</span> <span class="s">&quot;587&quot;</span>
+<span class="n">RPLib</span><span class="o">.</span><span class="n">email_Username</span> <span class="o">=</span> <span class="s">&quot;yournamehere&quot;</span>
+<span class="n">RPLib</span><span class="o">.</span><span class="n">email_Password</span> <span class="o">=</span> <span class="s">&quot;password&quot;</span>
+
+<span class="n">Subject</span> <span class="o">=</span> <span class="s">&quot;The process has started&quot;</span>
+
+<span class="c"># Msg represents the body of the email.</span>
+<span class="n">Msg</span> <span class="o">=</span> <span class="s">&quot;The automated nightly task has started&quot;</span>
+
+<span class="n">RPLib</span><span class="o">.</span><span class="n">email</span><span class="p">(</span><span class="n">Subject</span><span class="p">,</span> <span class="n">Msg</span><span class="p">)</span>
+
+<span class="c"># do stuff here</span>
+<span class="c">#</span>
+<span class="c">#</span>
+
+<span class="n">Subject</span> <span class="o">=</span> <span class="s">&quot;The process has ended&quot;</span>
+
+<span class="c"># Msg represents the body of the email.</span>
+<span class="n">Msg</span> <span class="o">=</span> <span class="s">&quot;The automated nightly task has ended&quot;</span>
+
+<span class="n">RPLib</span><span class="o">.</span><span class="n">email</span><span class="p">(</span><span class="n">Subject</span><span class="p">,</span> <span class="n">Msg</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Email Variables</a><ul>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#example-1">Example 1</a></li>
+<li><a class="reference internal" href="#example-2">Example 2</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to RPLib documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="loggingvariables.html"
+                        title="next chapter">Logging Variables</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/emailvariables.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="loggingvariables.html" title="Logging Variables"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to RPLib documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">RPLib 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ken Carrier.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>
