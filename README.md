@@ -5,5 +5,4 @@ RPLib is short for Reconcile and Post Library. This is a useful collection of Es
 
 Documentation
 =============
-[Click here] for detailed instructions on Installation, List of Functions and Variables, and Implementation Examples.
-[Click here]: http://kcarrier.github.io/RPLib/index.html
+<a href="http://kcarrier.github.io/RPLib/index.html" target="_blank">Click here</a> for detailed instructions on Installation, List of Functions and Variables, and Implementation Examples.
