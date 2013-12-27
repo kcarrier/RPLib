@@ -1,0 +1,309 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>truncateappend &mdash; RPLib 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="RPLib 1.0 documentation" href="index.html" />
+    <link rel="next" title="syncreplicas" href="syncreplicas.html" />
+    <link rel="prev" title="reconcilepost" href="reconcilepost.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="syncreplicas.html" title="syncreplicas"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="reconcilepost.html" title="reconcilepost"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">RPLib 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="truncateappend">
+<h1>truncateappend<a class="headerlink" href="#truncateappend" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-RPLib">
+<span id="rplib-truncateappend"></span><h2><a class="reference internal" href="#module-RPLib" title="RPLib"><tt class="xref py py-mod docutils literal"><span class="pre">RPLib</span></tt></a> &#8211; truncateappend<a class="headerlink" href="#module-RPLib" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="RPLib.truncateappend">
+<tt class="descclassname">RPLib.</tt><tt class="descname">truncateappend</tt><big>(</big><em>SourceObject=None</em>, <em>DestinationObject=None</em>, <em>SourceObjectCount=None</em>, <em>ObjectsSchemaTest=False</em>, <em>DestUpdateField=None</em>, <em>FieldMappings=None</em>, <em>Subtype=None</em><big>)</big><a class="reference internal" href="_modules/RPLib.html#truncateappend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RPLib.truncateappend" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Truncates and appends data from one object to another.</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="9%" />
+<col width="69%" />
+<col width="7%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+<th class="head">Required</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>SourceObject</strong></td>
+<td>String</td>
+<td>Path to the source geodatabase object.</td>
+<td>Yes</td>
+</tr>
+<tr class="row-odd"><td><strong>DestinationObject</strong></td>
+<td>String</td>
+<td>Path to the destination/target geodatabase object.</td>
+<td>Yes</td>
+</tr>
+<tr class="row-even"><td><strong>SourceObjectCount</strong></td>
+<td>Integer</td>
+<td><p class="first">Number of records that must be in the SourceObject before beginning the process.</p>
+<ul class="last simple">
+<li>None = 0 <strong>(Default)</strong></li>
+</ul>
+</td>
+<td>No</td>
+</tr>
+<tr class="row-odd"><td><strong>ObjectsSchemaTest</strong></td>
+<td>Boolean</td>
+<td><p class="first">The schema/fields of the input data must match the schema/fields of the target data.</p>
+<ul class="last simple">
+<li>True = Input schema must match the schema of the target.</li>
+<li>False = Input schema do not have to match that of the target dataset. <strong>(Default)</strong></li>
+</ul>
+</td>
+<td>No</td>
+</tr>
+<tr class="row-even"><td><strong>DestUpdateField</strong></td>
+<td>String</td>
+<td><p class="first">Provide the name of a field in the DestinationObject.</p>
+<ul class="last simple">
+<li>The field must be of type Date.</li>
+<li>After data is appended this field will be calculated with the current date and time.</li>
+</ul>
+</td>
+<td>No</td>
+</tr>
+<tr class="row-odd"><td><strong>FieldMappings</strong></td>
+<td>Field Mapping</td>
+<td>Can only be used if ObjectsSchemaTest is False.</td>
+<td>No</td>
+</tr>
+<tr class="row-even"><td><strong>Subtype</strong></td>
+<td>String</td>
+<td>A subtype description to assign that subtype to all new data that is appended to the target dataset.</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns: Boolean</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><strong>Append data from a Source object to a Destination/Target object.</strong></li>
+<li><strong>Destination/Target object cannot be versioned.</strong></li>
+<li><strong>An exclusive schema lock is not needed to update data in the Destination/Target object, it can be used.</strong></li>
+<li><strong>If you do not want to create a replica or do not have the ability to create replicas this could be used in place of replicas.</strong></li>
+<li><strong>If you have ArcGIS Server services pointed to a file gdb, you could use this method to update objects in the file gdb without stopping your services.</strong></li>
+<li><strong>By adding a Date field to your Destination/Target object you can keep track of when the data was last updated.</strong></li>
+</ul>
+</div>
+<div class="section" id="example-1">
+<h2>Example 1<a class="headerlink" href="#example-1" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p><strong>Simple call with all parameters specified.</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">RPLib</span>
+
+<span class="c"># SDE SourceObject</span>
+<span class="n">Source</span> <span class="o">=</span> <span class="s">&quot;C:/GIS/GISADMIN@GIS.sde/GISADMIN.Parcels&quot;</span>
+
+<span class="c"># File gdb DestinationObject</span>
+<span class="n">Destination</span> <span class="o">=</span> <span class="s">&quot;Z:/LandRecords.gdb/Parcels&quot;</span>
+
+<span class="c"># File gdb, field in Parcels that is of type Date</span>
+<span class="n">DateField</span> <span class="o">=</span> <span class="s">&quot;LASTUPDATED&quot;</span>
+
+<span class="n">RPLib</span><span class="o">.</span><span class="n">truncateappend</span><span class="p">(</span><span class="n">Source</span><span class="p">,</span><span class="n">Destination</span><span class="p">,</span><span class="s">&quot;100000&quot;</span><span class="p">,</span><span class="bp">False</span><span class="p">,</span><span class="n">DateField</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="example-2">
+<h2>Example 2<a class="headerlink" href="#example-2" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p><strong>Simple call with only required parameters specified.</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">RPLib</span>
+
+<span class="c"># SDE SourceObject</span>
+<span class="n">Source</span> <span class="o">=</span> <span class="s">&quot;C:/GIS/GISADMIN@GIS.sde/GISADMIN.Parcels&quot;</span>
+
+<span class="c"># File gdb DestinationObject</span>
+<span class="n">Destination</span> <span class="o">=</span> <span class="s">&quot;Z:/LandRecords.gdb/Parcels&quot;</span>
+
+<span class="n">RPLib</span><span class="o">.</span><span class="n">truncateappend</span><span class="p">(</span><span class="n">Source</span><span class="p">,</span><span class="n">Destination</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="example-3">
+<h2>Example 3<a class="headerlink" href="#example-3" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p><strong>If Else logic with all parameters specified.</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">RPLib</span>
+
+<span class="c"># SDE SourceObject</span>
+<span class="n">Source</span> <span class="o">=</span> <span class="s">&quot;C:/GIS/GISADMIN@GIS.sde/GISADMIN.Parcels&quot;</span>
+
+<span class="c"># File gdb DestinationObject</span>
+<span class="n">Destination</span> <span class="o">=</span> <span class="s">&quot;Z:/LandRecords.gdb/Parcels&quot;</span>
+
+<span class="c"># File gdb, field in Parcels that is of type Date</span>
+<span class="n">DateField</span> <span class="o">=</span> <span class="s">&quot;LASTUPDATED&quot;</span>
+
+<span class="k">if</span> <span class="n">RPLib</span><span class="o">.</span><span class="n">truncateappend</span><span class="p">(</span><span class="n">Source</span><span class="p">,</span><span class="n">Destination</span><span class="p">,</span><span class="s">&quot;100000&quot;</span><span class="p">,</span><span class="bp">False</span><span class="p">,</span><span class="n">DateField</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;successful, run another tool&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;failed, run another tool&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="example-4">
+<h2>Example 4<a class="headerlink" href="#example-4" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>Notice you do not need to specify these parameters because by default:</strong></dt>
+<dd><ul class="first last simple">
+<li><strong>SourceObjectCount     = 0</strong></li>
+<li><strong>ObjectsSchemaTest     = False</strong></li>
+<li><strong>DestUpdateField       = None</strong></li>
+<li><strong>FieldMappings         = None</strong></li>
+<li><strong>Subtype               = None</strong></li>
+</ul>
+</dd>
+</dl>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">RPLib</span>
+
+<span class="c"># SDE SourceObject</span>
+<span class="n">Source</span> <span class="o">=</span> <span class="s">&quot;C:/GIS/GISADMIN@GIS.sde/GISADMIN.Parcels&quot;</span>
+
+<span class="c"># File gdb DestinationObject</span>
+<span class="n">Destination</span> <span class="o">=</span> <span class="s">&quot;Z:/LandRecords.gdb/Parcels&quot;</span>
+
+<span class="c"># File gdb, field in Parcels that is of type Date</span>
+<span class="n">DateField</span> <span class="o">=</span> <span class="s">&quot;LASTUPDATED&quot;</span>
+
+<span class="k">if</span> <span class="n">RPLib</span><span class="o">.</span><span class="n">truncateappend</span><span class="p">(</span><span class="n">Source</span><span class="p">,</span><span class="n">Destination</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;successful, run another tool&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;failed, run another tool&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">truncateappend</a><ul>
+<li><a class="reference internal" href="#module-RPLib"><tt class="docutils literal"><span class="pre">RPLib</span></tt> &#8211; truncateappend</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#example-1">Example 1</a></li>
+<li><a class="reference internal" href="#example-2">Example 2</a></li>
+<li><a class="reference internal" href="#example-3">Example 3</a></li>
+<li><a class="reference internal" href="#example-4">Example 4</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="reconcilepost.html"
+                        title="previous chapter">reconcilepost</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="syncreplicas.html"
+                        title="next chapter">syncreplicas</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/truncateappend.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="syncreplicas.html" title="syncreplicas"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="reconcilepost.html" title="reconcilepost"
+             >previous</a> |</li>
+        <li><a href="index.html">RPLib 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ken Carrier.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>
