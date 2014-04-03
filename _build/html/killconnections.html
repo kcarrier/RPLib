@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>killconnections &mdash; RPLib 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="RPLib 1.0 documentation" href="index.html" />
+    <link rel="next" title="compressgdb" href="compressgdb.html" />
+    <link rel="prev" title="resumeconnections" href="resumeconnections.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="compressgdb.html" title="compressgdb"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="resumeconnections.html" title="resumeconnections"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">RPLib 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="killconnections">
+<h1>killconnections<a class="headerlink" href="#killconnections" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-RPLib">
+<span id="rplib-killconnections"></span><h2><a class="reference internal" href="truncateappend.html#module-RPLib" title="RPLib"><tt class="xref py py-mod docutils literal"><span class="pre">RPLib</span></tt></a> &#8211; killconnections<a class="headerlink" href="#module-RPLib" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="RPLib.killconnections">
+<tt class="descclassname">RPLib.</tt><tt class="descname">killconnections</tt><big>(</big><em>Workspace=None</em><big>)</big><a class="reference internal" href="_modules/RPLib.html#killconnections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RPLib.killconnections" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Allows an administrator to disconnect all users who are currently connected to an Enterprise geodatabase.</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="7%" />
+<col width="71%" />
+<col width="7%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+<th class="head">Required</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Workspace</strong></td>
+<td>String</td>
+<td>Path to SDE connection file</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns: Boolean</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><strong>Only works with enterprise geodatabases.</strong></li>
+<li><strong>This function is used by an administrative user to disconnect all users from an enterprise geodatabase.</strong></li>
+<li><strong>If this function is attempted to be run by a non-administrative user the function will fail.</strong></li>
+</ul>
+</div>
+<div class="section" id="example-1">
+<h2>Example 1<a class="headerlink" href="#example-1" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p><strong>Simple call with all parameters specified.</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">RPLib</span>
+
+<span class="n">sdeOwner</span> <span class="o">=</span> <span class="s">&quot;C:/GIS/SDEADMIN@GIS.sde&quot;</span>
+
+<span class="n">RPLib</span><span class="o">.</span><span class="n">killconnections</span><span class="p">(</span><span class="n">sdeOwner</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="example-2">
+<h2>Example 2<a class="headerlink" href="#example-2" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p><strong>If Else logic with all parameters specified.</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">RPLib</span>
+
+<span class="n">sdeOwner</span> <span class="o">=</span> <span class="s">&quot;C:/GIS/SDEADMIN@GIS.sde&quot;</span>
+
+<span class="k">if</span> <span class="n">RPLib</span><span class="o">.</span><span class="n">killconnections</span><span class="p">(</span><span class="n">sdeOwner</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;successful, run another tool&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;failed, run another tool&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">killconnections</a><ul>
+<li><a class="reference internal" href="#module-RPLib"><tt class="docutils literal"><span class="pre">RPLib</span></tt> &#8211; killconnections</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#example-1">Example 1</a></li>
+<li><a class="reference internal" href="#example-2">Example 2</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="resumeconnections.html"
+                        title="previous chapter">resumeconnections</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="compressgdb.html"
+                        title="next chapter">compressgdb</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/killconnections.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="compressgdb.html" title="compressgdb"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="resumeconnections.html" title="resumeconnections"
+             >previous</a> |</li>
+        <li><a href="index.html">RPLib 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ken Carrier.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>
