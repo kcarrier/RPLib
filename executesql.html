@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>resumeconnections &mdash; RPLib 1.0 documentation</title>
+    <title>executesql &mdash; RPLib 1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="RPLib 1.0 documentation" href="index.html" />
-    <link rel="next" title="killconnections" href="killconnections.html" />
-    <link rel="prev" title="pauseconnections" href="pauseconnections.html" /> 
+    <link rel="next" title="Implementation Examples" href="implementationexamples.html" />
+    <link rel="prev" title="deletefilesolderthan" href="deletefilesolderthan.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,10 +38,10 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="killconnections.html" title="killconnections"
+          <a href="implementationexamples.html" title="Implementation Examples"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="pauseconnections.html" title="pauseconnections"
+          <a href="deletefilesolderthan.html" title="deletefilesolderthan"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">RPLib 1.0 documentation</a> &raquo;</li> 
       </ul>
@@ -52,20 +52,20 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="resumeconnections">
-<h1>resumeconnections<a class="headerlink" href="#resumeconnections" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="executesql">
+<h1>executesql<a class="headerlink" href="#executesql" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-RPLib">
-<span id="rplib-resumeconnections"></span><h2><a class="reference internal" href="truncateappend.html#module-RPLib" title="RPLib"><tt class="xref py py-mod docutils literal"><span class="pre">RPLib</span></tt></a> &#8211; resumeconnections<a class="headerlink" href="#module-RPLib" title="Permalink to this headline">¶</a></h2>
+<span id="rplib-executesql"></span><h2><a class="reference internal" href="truncateappend.html#module-RPLib" title="RPLib"><tt class="xref py py-mod docutils literal"><span class="pre">RPLib</span></tt></a> &#8211; executesql<a class="headerlink" href="#module-RPLib" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="RPLib.resumeconnections">
-<tt class="descclassname">RPLib.</tt><tt class="descname">resumeconnections</tt><big>(</big><em>Workspace=None</em><big>)</big><a class="reference internal" href="_modules/RPLib.html#resumeconnections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RPLib.resumeconnections" title="Permalink to this definition">¶</a></dt>
-<dd><p><strong>Allows an administrator to enable the ability of nonadministrative users to make connections to an enterprise geodatabase.</strong></p>
+<dt id="RPLib.executesql">
+<tt class="descclassname">RPLib.</tt><tt class="descname">executesql</tt><big>(</big><em>Workspace=None</em>, <em>SQLStatement=None</em><big>)</big><a class="reference internal" href="_modules/RPLib.html#executesql"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RPLib.executesql" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Execute one or multiple SQL statements against an enterprise geodatabase.</strong></p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="15%" />
-<col width="7%" />
-<col width="71%" />
-<col width="7%" />
+<col width="8%" />
+<col width="3%" />
+<col width="86%" />
+<col width="4%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Parameter</th>
@@ -80,6 +80,11 @@
 <td>Path to SDE connection file.</td>
 <td>Yes</td>
 </tr>
+<tr class="row-odd"><td><strong>SQLStatement</strong></td>
+<td>String</td>
+<td>String of SQL statements to execute, statements separated by a semi-colon</td>
+<td>Yes</td>
+</tr>
 </tbody>
 </table>
 <p><strong>Returns: Boolean</strong></p>
@@ -89,21 +94,21 @@
 <div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><strong>Only works with enterprise geodatabases.</strong></li>
-<li><strong>This function is used by an administrative user to unblock or allow connections to an Enterprise geodatabase.</strong></li>
-<li><strong>If connections are blocked or paused this function will need to be used so new connections can once again be made to the geodatabase.</strong></li>
-<li><strong>If this function is attempted to be run by a nonadministrative user the function will fail.</strong></li>
+<li><strong>Execute raw SQL statements/queries using an SDE connection file.</strong></li>
 </ul>
 </div>
 <div class="section" id="example-1">
 <h2>Example 1<a class="headerlink" href="#example-1" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p><strong>Simple call with all parameters specified.</strong></p>
+<div><p><strong>Simple call with all parameters specified.</strong>
+<strong>Only one SQL statement.</strong></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">RPLib</span>
 
 <span class="n">sdeOwner</span> <span class="o">=</span> <span class="s">&quot;C:/GIS/SDEADMIN@GIS.sde&quot;</span>
 
-<span class="n">RPLib</span><span class="o">.</span><span class="n">resumeconnections</span><span class="p">(</span><span class="n">sdeOwner</span><span class="p">)</span>
+<span class="n">sqlStatement</span> <span class="o">=</span> <span class="s">&quot;select count(*) from sde.SDE_states;&quot;</span>
+
+<span class="n">RPLib</span><span class="o">.</span><span class="n">executesql</span><span class="p">(</span><span class="n">sdeOwner</span><span class="p">,</span><span class="n">sqlStatement</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -111,12 +116,31 @@
 <div class="section" id="example-2">
 <h2>Example 2<a class="headerlink" href="#example-2" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p><strong>If Else logic with all parameters specified.</strong></p>
+<div><p><strong>Simple call with only required parameters specified.</strong>
+<strong>Multiple SQL statements.</strong></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">RPLib</span>
 
 <span class="n">sdeOwner</span> <span class="o">=</span> <span class="s">&quot;C:/GIS/SDEADMIN@GIS.sde&quot;</span>
 
-<span class="k">if</span> <span class="n">RPLib</span><span class="o">.</span><span class="n">resumeconnections</span><span class="p">(</span><span class="n">sdeOwner</span><span class="p">):</span>
+<span class="n">sqlStatement</span> <span class="o">=</span> <span class="s">&quot;select count(*) from sde.SDE_states;select state_id from sde.SDE_states;&quot;</span>
+
+<span class="n">RPLib</span><span class="o">.</span><span class="n">executesql</span><span class="p">(</span><span class="n">sdeOwner</span><span class="p">,</span><span class="n">sqlStatement</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="example-3">
+<h2>Example 3<a class="headerlink" href="#example-3" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p><strong>If Else logic with all parameters specified.</strong>
+<strong>Multiple SQL statements.</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">RPLib</span>
+
+<span class="n">sdeOwner</span> <span class="o">=</span> <span class="s">&quot;C:/GIS/SDEADMIN@GIS.sde&quot;</span>
+
+<span class="n">sqlStatement</span> <span class="o">=</span> <span class="s">&quot;select count(*) from sde.SDE_states;select state_id from sde.SDE_states;&quot;</span>
+
+<span class="k">if</span> <span class="n">RPLib</span><span class="o">.</span><span class="n">executesql</span><span class="p">(</span><span class="n">sdeOwner</span><span class="p">,</span><span class="n">sqlStatement</span><span class="p">):</span>
     <span class="k">print</span><span class="p">(</span><span class="s">&quot;successful, run another tool&quot;</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="k">print</span><span class="p">(</span><span class="s">&quot;failed, run another tool&quot;</span><span class="p">)</span>
@@ -134,24 +158,25 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">resumeconnections</a><ul>
-<li><a class="reference internal" href="#module-RPLib"><tt class="docutils literal"><span class="pre">RPLib</span></tt> &#8211; resumeconnections</a></li>
+<li><a class="reference internal" href="#">executesql</a><ul>
+<li><a class="reference internal" href="#module-RPLib"><tt class="docutils literal"><span class="pre">RPLib</span></tt> &#8211; executesql</a></li>
 <li><a class="reference internal" href="#usage">Usage</a></li>
 <li><a class="reference internal" href="#example-1">Example 1</a></li>
 <li><a class="reference internal" href="#example-2">Example 2</a></li>
+<li><a class="reference internal" href="#example-3">Example 3</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="pauseconnections.html"
-                        title="previous chapter">pauseconnections</a></p>
+  <p class="topless"><a href="deletefilesolderthan.html"
+                        title="previous chapter">deletefilesolderthan</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="killconnections.html"
-                        title="next chapter">killconnections</a></p>
+  <p class="topless"><a href="implementationexamples.html"
+                        title="next chapter">Implementation Examples</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="_sources/resumeconnections.txt"
+    <li><a href="_sources/executesql.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">
@@ -181,10 +206,10 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="killconnections.html" title="killconnections"
+          <a href="implementationexamples.html" title="Implementation Examples"
              >next</a> |</li>
         <li class="right" >
-          <a href="pauseconnections.html" title="pauseconnections"
+          <a href="deletefilesolderthan.html" title="deletefilesolderthan"
              >previous</a> |</li>
         <li><a href="index.html">RPLib 1.0 documentation</a> &raquo;</li> 
       </ul>

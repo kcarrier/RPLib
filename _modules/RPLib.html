@@ -109,7 +109,7 @@
 <span class="sd">    ==================   ========  =======================================================================================  =========</span>
 <span class="sd">    Parameter            Type      Description                                                                              Required</span>
 <span class="sd">    ==================   ========  =======================================================================================  =========</span>
-<span class="sd">    **Workspace**        String    Path to sde connection file.                                                             Yes</span>
+<span class="sd">    **Workspace**        String    Path to SDE connection file.                                                             Yes</span>
 <span class="sd">    ==================   ========  =======================================================================================  =========</span>
 
 <span class="sd">    **Returns: Boolean**</span>
@@ -144,7 +144,7 @@
 <span class="sd">    ==================   ========  =======================================================================================  =========</span>
 <span class="sd">    Parameter            Type      Description                                                                              Required</span>
 <span class="sd">    ==================   ========  =======================================================================================  =========</span>
-<span class="sd">    **Workspace**        String    Path to sde connection file.                                                             Yes</span>
+<span class="sd">    **Workspace**        String    Path to SDE connection file.                                                             Yes</span>
 <span class="sd">    ==================   ========  =======================================================================================  =========</span>
 
 <span class="sd">    **Returns: Boolean**</span>
@@ -184,7 +184,7 @@
 <span class="sd">    ==================   ========  =======================================================================================  =========</span>
 <span class="sd">    Parameter            Type      Description                                                                              Required</span>
 <span class="sd">    ==================   ========  =======================================================================================  =========</span>
-<span class="sd">    **Workspace**        String    Path to sde connection file.                                                              Yes</span>
+<span class="sd">    **Workspace**        String    Path to SDE connection file.                                                              Yes</span>
 <span class="sd">    ==================   ========  =======================================================================================  =========</span>
 
 <span class="sd">    **Returns: Boolean**</span>
@@ -223,7 +223,7 @@
 <span class="sd">    ==================   ========  =======================================================================================  =========</span>
 <span class="sd">    Parameter            Type      Description                                                                              Required</span>
 <span class="sd">    ==================   ========  =======================================================================================  =========</span>
-<span class="sd">    **Workspace**        String    Path to sde connection file                                                              Yes</span>
+<span class="sd">    **Workspace**        String    Path to SDE connection file                                                              Yes</span>
 <span class="sd">    ==================   ========  =======================================================================================  =========</span>
 
 <span class="sd">    **Returns: Boolean**</span>
@@ -262,7 +262,7 @@
 <span class="sd">    ==================   ========  =======================================================================================  =========</span>
 <span class="sd">    Parameter            Type      Description                                                                              Required</span>
 <span class="sd">    ==================   ========  =======================================================================================  =========</span>
-<span class="sd">    **Workspace**        String    Path to sde connection file.                                                             Yes</span>
+<span class="sd">    **Workspace**        String    Path to SDE connection file.                                                             Yes</span>
 <span class="sd">    ==================   ========  =======================================================================================  =========</span>
 
 <span class="sd">    **Returns: Boolean**</span>
@@ -298,7 +298,7 @@
 <span class="sd">    ==================   ========  =======================================================================================  ==========</span>
 <span class="sd">    Parameter              Type                                      Description                                             Required</span>
 <span class="sd">    ==================   ========  =======================================================================================  ==========</span>
-<span class="sd">    **Workspace**        String    Path to sde connection file .                                                            Yes</span>
+<span class="sd">    **Workspace**        String    Path to SDE connection file .                                                            Yes</span>
 <span class="sd">    **Versions_List**    List      The name of the version(s) to be created.                                                Yes</span>
 <span class="sd">    **PublicAccess**     Boolean   The permission access level for the version.                                             No\n</span>
 <span class="sd">                                   * True = Public **(Default)**\n</span>
@@ -435,7 +435,7 @@
 <span class="sd">    ===================   ========  =======================================================================================  ==========</span>
 <span class="sd">    Parameter               Type                                      Description                                             Required</span>
 <span class="sd">    ===================   ========  =======================================================================================  ==========</span>
-<span class="sd">    **Workspace**         String    Path to sde connection file                                                              Yes</span>
+<span class="sd">    **Workspace**         String    Path to SDE connection file                                                              Yes</span>
 <span class="sd">    **excludeList**       List      List of object names to exclude from being processed.                                    No</span>
 <span class="sd">    **include_system**    Boolean   Indicates whether statistics will be gathered on the states and state lineages tables.   No\n</span>
 <span class="sd">                                    * True = SYSTEM\n</span>
@@ -702,7 +702,7 @@
 <span class="sd">    ======================  ========  ===============================================================================================================================================================================================================================================  ==========</span>
 <span class="sd">    Parameter                 Type                                      Description                                                                                                                                                                                                     Required</span>
 <span class="sd">    ======================  ========  ===============================================================================================================================================================================================================================================  ==========</span>
-<span class="sd">    **Workspace**           String    Path to sde connection file.                                                                                                                                                                                                                     Yes</span>
+<span class="sd">    **Workspace**           String    Path to SDE connection file.                                                                                                                                                                                                                     Yes</span>
 <span class="sd">    **log_folder**          String    Path to folder where log file(s) will be stored.                                                                                                                                                                                                 Yes</span>
 <span class="sd">    **versions**            List      List of version names to be reconciled and posted.                                                                                                                                                                                               No\n</span>
 <span class="sd">    **parent_version**      String    The geodatabase, or version of a geodatabase, which owns the version(s).                                                                                                                                                                         No\n</span>
@@ -1520,6 +1520,66 @@
                 <span class="k">print</span><span class="p">(</span><span class="n">Msg</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
                 <span class="k">if</span> <span class="n">email_ON</span><span class="p">:</span> <span class="n">email</span><span class="p">(</span><span class="n">Subject</span><span class="p">,</span> <span class="n">Msg</span><span class="p">)</span>
                 <span class="k">return</span> <span class="bp">False</span>
+</div>
+<div class="viewcode-block" id="executesql"><a class="viewcode-back" href="../executesql.html#RPLib.executesql">[docs]</a><span class="k">def</span> <span class="nf">executesql</span><span class="p">(</span><span class="n">Workspace</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="n">SQLStatement</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Execute one or multiple SQL statements against an enterprise geodatabase.**</span>
+
+<span class="sd">    ======================  ========  ===============================================================================================================================================================================================================================================  ==========</span>
+<span class="sd">    Parameter                 Type                                      Description                                                                                                                                                                                                     Required</span>
+<span class="sd">    ======================  ========  ===============================================================================================================================================================================================================================================  ==========</span>
+<span class="sd">    **Workspace**           String    Path to SDE connection file.                                                                                                                                                                                                                     Yes</span>
+<span class="sd">    **SQLStatement**        String    String of SQL statements to execute, statements separated by a semi-colon                                                                                                                                                                        Yes</span>
+<span class="sd">    ======================  ========  ===============================================================================================================================================================================================================================================  ==========</span>
+
+<span class="sd">    **Returns: Boolean**</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c"># Make data path relative</span>
+        <span class="k">if</span> <span class="n">verifysde</span><span class="p">(</span><span class="n">Workspace</span><span class="p">,</span><span class="s">&quot;executesql&quot;</span><span class="p">):</span>
+
+            <span class="n">arcpy</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span>
+
+            <span class="n">sde_conn</span> <span class="o">=</span> <span class="n">arcpy</span><span class="o">.</span><span class="n">ArcSDESQLExecute</span><span class="p">(</span><span class="n">Workspace</span><span class="p">)</span>
+
+            <span class="c"># Get the SQL statements, separated by ; from a text string.</span>
+            <span class="n">sql_statement</span> <span class="o">=</span> <span class="n">SQLStatement</span>
+            <span class="n">sql_statement_list</span> <span class="o">=</span> <span class="n">sql_statement</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;;&quot;</span><span class="p">)</span>
+
+            <span class="c"># Encode statements as UTF-8</span>
+            <span class="n">sql_statement_list</span> <span class="o">=</span> <span class="n">utf8ify</span><span class="p">(</span><span class="n">sql_statement_list</span><span class="p">)</span>
+
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;+++++++++++++++++++++++++++++++++++++++++++++</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">sql</span> <span class="ow">in</span> <span class="n">sql_statement_list</span><span class="p">:</span>
+                    <span class="c"># Check that item in list is not empty</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">sde_return</span> <span class="o">=</span> <span class="bp">True</span>
+                        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Execute SQL Statement: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sql</span><span class="p">))</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">sde_return</span> <span class="o">=</span> <span class="n">sde_conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+                            <span class="k">print</span><span class="p">(</span><span class="n">sde_return</span><span class="p">)</span>
+                        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                            <span class="k">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
+                            <span class="n">sde_return</span> <span class="o">=</span> <span class="bp">False</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sde_return</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                            <span class="k">print</span><span class="p">(</span><span class="s">&quot;Number of rows returned by query: &quot;</span>
+                                  <span class="s">&quot;{0} rows&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sde_return</span><span class="p">)))</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">sde_return</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span>
+                                <span class="k">print</span><span class="p">(</span><span class="s">&quot;SQL statement: {0} SUCCESS.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sql</span><span class="p">))</span>
+                            <span class="k">elif</span> <span class="n">sde_return</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
+                                <span class="k">print</span><span class="p">(</span><span class="s">&quot;SQL statement: {0} FAILED.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sql</span><span class="p">))</span>
+                        <span class="k">print</span><span class="p">(</span><span class="s">&quot;+++++++++++++++++++++++++++++++++++++++++++++</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">True</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+
+        <span class="n">errstring</span> <span class="o">=</span> <span class="s">&quot;&#39;ascii&#39; codec can&#39;t encode character&quot;</span>
+        <span class="k">if</span> <span class="n">errstring</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">False</span>
 
 
 </div>
@@ -1942,6 +2002,10 @@
 <span class="sd">    Helper function to show messages returned at the end of a line.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">print</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span><span class="n">end</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">utf8ify</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+   <span class="sd">&#39;&#39;&#39;Encode a list of strings in utf8&#39;&#39;&#39;</span>
+   <span class="k">return</span> <span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf8&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">]</span>
 
 <span class="k">def</span> <span class="nf">email</span><span class="p">(</span><span class="n">Subject</span><span class="p">,</span><span class="n">Msg</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>

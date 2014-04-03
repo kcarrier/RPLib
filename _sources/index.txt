@@ -24,7 +24,7 @@ Installation
 
     b) **ArcGIS10.2**
 
-3. Copy RPLib.py into the folder representing the currently installed version of ArcGIS Desktop. For example;
+3. Copy |RPLib.py| into the folder representing the currently installed version of ArcGIS Desktop. For example;
 
     a) **C:\\Python27\\ArcGIS10.1**
 
@@ -97,9 +97,10 @@ Functions
 .. |PythonEditors| raw:: html
 
    <a href="https://wiki.python.org/moin/PythonEditors" target="_blank">Click here</a>
-.. |br| raw:: html
 
-   <br />
+.. |RPLib.py| raw:: html
+
+    <a href="https://github.com/kcarrier/RPLib/archive/master.zip" target="_blank">RPLib.py</a>
 
 .. toctree::
    :titlesonly:
@@ -117,6 +118,7 @@ Functions
    syncreplicas
    controlservices
    deletefilesolderthan
+   executesql
 
 Implementation Examples
 ================================
