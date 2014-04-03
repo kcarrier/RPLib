@@ -1472,6 +1472,66 @@ def syncreplicas(ParentGDB = None,
                 if email_ON: email(Subject, Msg)
                 return False
 
+def executesql(Workspace = None, SQLStatement = None,):
+    """
+    **Execute one or multiple SQL statements against an enterprise geodatabase.**
+
+    ======================  ========  ===============================================================================================================================================================================================================================================  ==========
+    Parameter                 Type                                      Description                                                                                                                                                                                                     Required
+    ======================  ========  ===============================================================================================================================================================================================================================================  ==========
+    **Workspace**           String    Path to SDE connection file.                                                                                                                                                                                                                     Yes
+    **SQLStatement**        String    String of SQL statements to execute, statements separated by a semi-colon                                                                                                                                                                        Yes
+    ======================  ========  ===============================================================================================================================================================================================================================================  ==========
+
+    **Returns: Boolean**
+    """
+    try:
+        # Make data path relative
+        if verifysde(Workspace,"executesql"):
+
+            arcpy.env.workspace = Workspace
+
+            sde_conn = arcpy.ArcSDESQLExecute(Workspace)
+
+            # Get the SQL statements, separated by ; from a text string.
+            sql_statement = SQLStatement
+            sql_statement_list = sql_statement.split(";")
+
+            # Encode statements as UTF-8
+            sql_statement_list = utf8ify(sql_statement_list)
+
+            print("+++++++++++++++++++++++++++++++++++++++++++++\n")
+            for sql in sql_statement_list:
+                    # Check that item in list is not empty
+                    if len(sql) != 0:
+                        sde_return = True
+                        print("Execute SQL Statement: {0}".format(sql))
+                        try:
+                            sde_return = sde_conn.execute(sql)
+                            print(sde_return)
+                        except Exception as err:
+                            print(str(err))
+                            sde_return = False
+                        if isinstance(sde_return, list):
+                            print("Number of rows returned by query: "
+                                  "{0} rows".format(len(sde_return)))
+                        else:
+                            if sde_return == True:
+                                print("SQL statement: {0} SUCCESS.".format(sql))
+                            elif sde_return == False:
+                                print("SQL statement: {0} FAILED.".format(sql))
+                        print("+++++++++++++++++++++++++++++++++++++++++++++\n")
+            return True
+
+    except Exception as err:
+
+        errstring = "'ascii' codec can't encode character"
+        if errstring in str(err):
+            pass
+        else:
+            print(str(err))
+            return False
+
 
 
 def controlservices(Folder=None,
@@ -1893,6 +1953,10 @@ def prnt(statement):
     Helper function to show messages returned at the end of a line.
     """
     print(statement,end="")
+
+def utf8ify(list):
+   '''Encode a list of strings in utf8'''
+   return [item.encode('utf8') for item in list]
 
 def email(Subject,Msg):
     """
