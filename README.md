@@ -15,9 +15,25 @@ been done manually, until now. Hopefully this collection of functions will be us
 other functions or processes that would be useful to the community please share and we will try to add it to a future release, thank you!
 
 Updates
-=============
+=======
 04/03/2014 - Added executesql function
 
 Documentation
 =============
 <a href="http://kcarrier.github.io/RPLib/index.html" target="_blank">Click here</a> for detailed instructions on Installation, List of Functions and Variables, and Implementation Examples.
+
+Functions
+=========
+clearworkspacecache - Clears any ArcSDE workspaces from the ArcSDE workspace cache.
+pauseconnections
+resumeconnections
+killconnections
+compressgdb
+createversions
+rebuild_indexes_analyze
+reconcilepost
+truncateappend
+syncreplicas
+controlservices
+deletefilesolderthan
+executesql
