@@ -14,6 +14,10 @@ building RPLib was to make it easier for those within the community to automate 
 been done manually, until now. Hopefully this collection of functions will be useful to your organization and if there are
 other functions or processes that would be useful to the community please share and we will try to add it to a future release, thank you!
 
+Updates
+=============
+04/03/2014 - Added executesql function
+
 Documentation
 =============
 <a href="http://kcarrier.github.io/RPLib/index.html" target="_blank">Click here</a> for detailed instructions on Installation, List of Functions and Variables, and Implementation Examples.
