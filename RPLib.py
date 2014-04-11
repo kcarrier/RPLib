@@ -515,44 +515,62 @@ def rebuild_indexes_analyze(Workspace = None,
         return False
 
     try:
+
         prnt("Gathering list of database objects...")
 
-        fcs = arcpy.ListFeatureClasses("*.{0}.*".format(userName))
+        # Types of objects that will processed.
+        ftypes = ['Table','FeatureClass','FeatureDataset']
 
-        fds = arcpy.ListDatasets('*.' + userName + '.*','Feature')
+        # Tuple of Table and FeatureClass objects.
+        gdb_objects = []
+        # Tuple of FeatureDataSet objects
+        fds_objects = []
 
-        if not len(fds) == 0:
-            for fd in fds:
-                fcs += arcpy.ListFeatureClasses(
-                "*.{0}.*".format(userName),feature_dataset=fd)
+        # Tuple of versioned Table and FeatureClass objects.
+        idx_objects = []
+        # Tuple of versioned FeatureDataSet objects
+        fidx_objects = []
 
-                tbls = arcpy.ListTables("*.{0}.*".format(userName))
+        # Use arcpy's data access module to walk the current workspace
+        # and gather all object specified in ftypes tuple.
+        for dirpath, dirnames, filenames in arcpy.da.Walk(Workspace,
+                                                          followlinks=True,
+                                                          datatype=ftypes):
+            # Loop through all objects in geodatabase and append them
+            # to the gdb_objects tuple.
+            for filename in filenames:
+                gdb_objects.append(filename)
+            # Loop through all objects in geodatabase and append them
+            # to the fds_objects if they are of type FeatureDataSet.
+            for dirname in dirnames:
+                fds_objects.append(dirname)
 
-                gdb_objects = []
+        # Check to see that excludeList is not empty.
+        if not len(excludeList) == 0:
+            # If objects exist in excludeList compare them to gdb_objects.
+            # If a match is found remove the object from gdb_objects.
+            gdb_objects =[objects.upper() for objects
+                          in gdb_objects if not any(exclude.upper()
+                          for exclude in excludeList if exclude.upper()
+                          in objects.upper())]
 
-                if not len(fcs) == 0:
-                    gdb_objects += fcs
+        # If only_version is True
+        if only_versioned:
+            # Loop through gdb_objects
+            for obj in gdb_objects:
+                # For each object check to see if the object is versioned.
+                if arcpy.Describe(obj).Isversioned:
+                    # If object is versioned add it to the idx_objects tuple.
+                    idx_objects.append(obj)
+            # Loop through FeatureDataSet objects
+            for obj in fds_objects:
+                # For each object check to see if the object is versioned.
+                if arcpy.Describe(obj).Isversioned:
+                    # If object is versioned add it to the fidx_objects tuple.
+                    fidx_objects.append(obj)
 
-                if not len(tbls) == 0:
-                    gdb_objects += tbls
-
-                if only_versioned:
-                    for obj in gdb_objects:
-                        if not arcpy.Describe(obj).isVersioned:
-                            gdb_objects.remove(obj)
-
-                if not len(excludeList) == 0:
-                    gdb_objects =[objects.upper() for objects
-                                  in gdb_objects if not any(exclude.upper()
-                                  for exclude in excludeList if exclude.upper()
-                                  in objects.upper())]
-
-                for obj in gdb_objects:
-                    if not arcpy.TestSchemaLock(obj):
-                        print(" {0} will not be processed, cannot"
-                              " get exclusive schema"
-                              " lock.\n".format(obj))
-                        gdb_objects.remove(obj)
+        # If verbose logging is True show arcpy.Messages.
+        # If False print success on same line.
         success()
 
     except Exception, e:
@@ -560,33 +578,40 @@ def rebuild_indexes_analyze(Workspace = None,
         Subject = " Error: rebuild index analyze"
         Msg = (
               " An error occurred while trying to gather objects"
-              " for {0}.\n Please ensure the correct connection file"
-              " is being referenced and that the user has permissions"
-              " to create versions.\n Does the parent version being"
-              " referenced exist?\n Is the correct string being passed"
-              " for PublicAccess?\n Please review the log file for more"
-              " detailed information.".format(Workspace))
+              " for workspace: {0}.\n Please ensure the correct connection file"
+              " is being referenced".format(Workspace))
 
         print(Msg + "\n" + " " + str(e))
         if email_ON: email(Subject, Msg)
         return False
 
+    # If only_versioned is True.
+    if only_versioned:
+        # Set initial objects to only versioned objects
+        gdb_objects = idx_objects
+        fds_objects = fidx_objects
+
+    # Check to ensure the tuple is not empty.
     if not len(gdb_objects) == 0:
-        prnt("Beginning Rebuilding Indexes for FeatureClasses and"
+        prnt("  Beginning Rebuilding Indexes for FeatureClasses and"
              " Tables for user: {0} ... ".format(userName))
         try:
+            # Call Esri tool to rebuild indexes on all gdb_objects
             arcpy.RebuildIndexes_management(Workspace,
                                             include_system,
                                             gdb_objects,
                                             delta_only)
             success()
 
-            if not len(fds) == 0:
-                prnt( "Begin Analyzing FeatureDataSets for user:"
-                      " {0} ... ".format(userName))
+            # Check to ensure fds_objects is not empty.
+            if not len(fds_objects) == 0:
+                prnt( "  Begin Analyzing FeatureDataSets"
+                      " for user: {0} ... ".format(userName))
+
+                # Call Esri tool to analyze Featuredatasets in fds_objects.
                 arcpy.AnalyzeDatasets_management(Workspace,
                                                  include_system,
-                                                 fds,
+                                                 fds_objects,
                                                  analyze_base,
                                                  analyze_delta,
                                                  analyze_archive)
@@ -595,6 +620,8 @@ def rebuild_indexes_analyze(Workspace = None,
 
         except Exception, e:
             failed()
+            # The initial tools failed because of a permissions issue.
+            # This will try to rerun the tools with less permissions.
             if "000684" in str(e):
                 print("  User does not have permissions to work with"
                       " system tables\n")
@@ -609,13 +636,13 @@ def rebuild_indexes_analyze(Workspace = None,
 
                     success()
 
-                    if not len(fds) == 0:
+                    if not len(fds_objects) == 0:
                         prnt( "  TRYING WITHOUT SYSTEM TABLES!!! Begin"
                               " Analyzing FeatureDataSets for user:"
                               " {0} ... ".format(userName))
                         arcpy.AnalyzeDatasets_management(Workspace,
                                                          "NO_SYSTEM",
-                                                         fds,
+                                                         fds_objects,
                                                          analyze_base,
                                                          analyze_delta,
                                                          analyze_archive)

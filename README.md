@@ -15,7 +15,8 @@ other functions or processes that would be useful to the community please share 
 
 ### Updates
 
-04/03/2014 - Added executesql function
+1. 04/03/2014 - Added executesql function
+2. 04/11/2014 - Enhanced rebuild_indexes_analyze function to be more efficient when gathering database objects. Thanks to Patricia Moehring for finding this!
 
 ### Documentation
 
