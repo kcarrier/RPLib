@@ -119,6 +119,7 @@ Functions
    controlservices
    deletefilesolderthan
    executesql
+   emaillog
 
 Implementation Examples
 ================================

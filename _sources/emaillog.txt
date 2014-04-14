@@ -1,0 +1,49 @@
+emaillog
+================================
+
+:mod:`RPLib` -- emaillog
+--------------------------------------------
+.. automodule:: RPLib
+   :show-inheritance:
+.. autofunction:: emaillog
+
+Usage
+---------------------------------------------
+* **Makes a copy of the current log file named LastRun.txt.**
+* **Sends an email with the contents of LastRun.txt.**
+* **Uses email_variables for sending emails.**
+* **Should be run at the end of a script.**
+
+Example 1
+---------------------------------------------
+    **Simple call with no parameters specified.**
+    **Default Subject is "GIS Detailed Log".**
+
+    ::
+
+        import RPLib
+
+        RPLib.emaillog()
+
+Example 2
+---------------------------------------------
+    **Simple call with Subject paramter specified.**
+
+    ::
+
+        import RPLib
+
+        RPLib.emaillog("My Subject")
+
+Example 3
+---------------------------------------------
+    **If Else logic with all parameters specified.**
+
+    ::
+
+        import RPLib
+
+        if RPLib.emaillog("My Subject"):
+            print("successful, run another tool")
+        else:
+            print("failed, run another tool")

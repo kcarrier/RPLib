@@ -564,44 +564,62 @@
         <span class="k">return</span> <span class="bp">False</span>
 
     <span class="k">try</span><span class="p">:</span>
+
         <span class="n">prnt</span><span class="p">(</span><span class="s">&quot;Gathering list of database objects...&quot;</span><span class="p">)</span>
 
-        <span class="n">fcs</span> <span class="o">=</span> <span class="n">arcpy</span><span class="o">.</span><span class="n">ListFeatureClasses</span><span class="p">(</span><span class="s">&quot;*.{0}.*&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">userName</span><span class="p">))</span>
+        <span class="c"># Types of objects that will processed.</span>
+        <span class="n">ftypes</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Table&#39;</span><span class="p">,</span><span class="s">&#39;FeatureClass&#39;</span><span class="p">,</span><span class="s">&#39;FeatureDataset&#39;</span><span class="p">]</span>
 
-        <span class="n">fds</span> <span class="o">=</span> <span class="n">arcpy</span><span class="o">.</span><span class="n">ListDatasets</span><span class="p">(</span><span class="s">&#39;*.&#39;</span> <span class="o">+</span> <span class="n">userName</span> <span class="o">+</span> <span class="s">&#39;.*&#39;</span><span class="p">,</span><span class="s">&#39;Feature&#39;</span><span class="p">)</span>
+        <span class="c"># Tuple of Table and FeatureClass objects.</span>
+        <span class="n">gdb_objects</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c"># Tuple of FeatureDataSet objects</span>
+        <span class="n">fds_objects</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">fds</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">fd</span> <span class="ow">in</span> <span class="n">fds</span><span class="p">:</span>
-                <span class="n">fcs</span> <span class="o">+=</span> <span class="n">arcpy</span><span class="o">.</span><span class="n">ListFeatureClasses</span><span class="p">(</span>
-                <span class="s">&quot;*.{0}.*&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">userName</span><span class="p">),</span><span class="n">feature_dataset</span><span class="o">=</span><span class="n">fd</span><span class="p">)</span>
+        <span class="c"># Tuple of versioned Table and FeatureClass objects.</span>
+        <span class="n">idx_objects</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c"># Tuple of versioned FeatureDataSet objects</span>
+        <span class="n">fidx_objects</span> <span class="o">=</span> <span class="p">[]</span>
 
-                <span class="n">tbls</span> <span class="o">=</span> <span class="n">arcpy</span><span class="o">.</span><span class="n">ListTables</span><span class="p">(</span><span class="s">&quot;*.{0}.*&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">userName</span><span class="p">))</span>
+        <span class="c"># Use arcpy&#39;s data access module to walk the current workspace</span>
+        <span class="c"># and gather all object specified in ftypes tuple.</span>
+        <span class="k">for</span> <span class="n">dirpath</span><span class="p">,</span> <span class="n">dirnames</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">arcpy</span><span class="o">.</span><span class="n">da</span><span class="o">.</span><span class="n">Walk</span><span class="p">(</span><span class="n">Workspace</span><span class="p">,</span>
+                                                          <span class="n">followlinks</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                                          <span class="n">datatype</span><span class="o">=</span><span class="n">ftypes</span><span class="p">):</span>
+            <span class="c"># Loop through all objects in geodatabase and append them</span>
+            <span class="c"># to the gdb_objects tuple.</span>
+            <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
+                <span class="n">gdb_objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+            <span class="c"># Loop through all objects in geodatabase and append them</span>
+            <span class="c"># to the fds_objects if they are of type FeatureDataSet.</span>
+            <span class="k">for</span> <span class="n">dirname</span> <span class="ow">in</span> <span class="n">dirnames</span><span class="p">:</span>
+                <span class="n">fds_objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span>
 
-                <span class="n">gdb_objects</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c"># Check to see that excludeList is not empty.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">excludeList</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c"># If objects exist in excludeList compare them to gdb_objects.</span>
+            <span class="c"># If a match is found remove the object from gdb_objects.</span>
+            <span class="n">gdb_objects</span> <span class="o">=</span><span class="p">[</span><span class="n">objects</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="k">for</span> <span class="n">objects</span>
+                          <span class="ow">in</span> <span class="n">gdb_objects</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">exclude</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+                          <span class="k">for</span> <span class="n">exclude</span> <span class="ow">in</span> <span class="n">excludeList</span> <span class="k">if</span> <span class="n">exclude</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+                          <span class="ow">in</span> <span class="n">objects</span><span class="o">.</span><span class="n">upper</span><span class="p">())]</span>
 
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">fcs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">gdb_objects</span> <span class="o">+=</span> <span class="n">fcs</span>
+        <span class="c"># If only_version is True</span>
+        <span class="k">if</span> <span class="n">only_versioned</span><span class="p">:</span>
+            <span class="c"># Loop through gdb_objects</span>
+            <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">gdb_objects</span><span class="p">:</span>
+                <span class="c"># For each object check to see if the object is versioned.</span>
+                <span class="k">if</span> <span class="n">arcpy</span><span class="o">.</span><span class="n">Describe</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">Isversioned</span><span class="p">:</span>
+                    <span class="c"># If object is versioned add it to the idx_objects tuple.</span>
+                    <span class="n">idx_objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+            <span class="c"># Loop through FeatureDataSet objects</span>
+            <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">fds_objects</span><span class="p">:</span>
+                <span class="c"># For each object check to see if the object is versioned.</span>
+                <span class="k">if</span> <span class="n">arcpy</span><span class="o">.</span><span class="n">Describe</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">Isversioned</span><span class="p">:</span>
+                    <span class="c"># If object is versioned add it to the fidx_objects tuple.</span>
+                    <span class="n">fidx_objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">tbls</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">gdb_objects</span> <span class="o">+=</span> <span class="n">tbls</span>
-
-                <span class="k">if</span> <span class="n">only_versioned</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">gdb_objects</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="ow">not</span> <span class="n">arcpy</span><span class="o">.</span><span class="n">Describe</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">isVersioned</span><span class="p">:</span>
-                            <span class="n">gdb_objects</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">excludeList</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">gdb_objects</span> <span class="o">=</span><span class="p">[</span><span class="n">objects</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="k">for</span> <span class="n">objects</span>
-                                  <span class="ow">in</span> <span class="n">gdb_objects</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">exclude</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
-                                  <span class="k">for</span> <span class="n">exclude</span> <span class="ow">in</span> <span class="n">excludeList</span> <span class="k">if</span> <span class="n">exclude</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
-                                  <span class="ow">in</span> <span class="n">objects</span><span class="o">.</span><span class="n">upper</span><span class="p">())]</span>
-
-                <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">gdb_objects</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">arcpy</span><span class="o">.</span><span class="n">TestSchemaLock</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-                        <span class="k">print</span><span class="p">(</span><span class="s">&quot; {0} will not be processed, cannot&quot;</span>
-                              <span class="s">&quot; get exclusive schema&quot;</span>
-                              <span class="s">&quot; lock.</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
-                        <span class="n">gdb_objects</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="c"># If verbose logging is True show arcpy.Messages.</span>
+        <span class="c"># If False print success on same line.</span>
         <span class="n">success</span><span class="p">()</span>
 
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
@@ -609,33 +627,40 @@
         <span class="n">Subject</span> <span class="o">=</span> <span class="s">&quot; Error: rebuild index analyze&quot;</span>
         <span class="n">Msg</span> <span class="o">=</span> <span class="p">(</span>
               <span class="s">&quot; An error occurred while trying to gather objects&quot;</span>
-              <span class="s">&quot; for {0}.</span><span class="se">\n</span><span class="s"> Please ensure the correct connection file&quot;</span>
-              <span class="s">&quot; is being referenced and that the user has permissions&quot;</span>
-              <span class="s">&quot; to create versions.</span><span class="se">\n</span><span class="s"> Does the parent version being&quot;</span>
-              <span class="s">&quot; referenced exist?</span><span class="se">\n</span><span class="s"> Is the correct string being passed&quot;</span>
-              <span class="s">&quot; for PublicAccess?</span><span class="se">\n</span><span class="s"> Please review the log file for more&quot;</span>
-              <span class="s">&quot; detailed information.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Workspace</span><span class="p">))</span>
+              <span class="s">&quot; for workspace: {0}.</span><span class="se">\n</span><span class="s"> Please ensure the correct connection file&quot;</span>
+              <span class="s">&quot; is being referenced&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Workspace</span><span class="p">))</span>
 
         <span class="k">print</span><span class="p">(</span><span class="n">Msg</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">email_ON</span><span class="p">:</span> <span class="n">email</span><span class="p">(</span><span class="n">Subject</span><span class="p">,</span> <span class="n">Msg</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">False</span>
 
+    <span class="c"># If only_versioned is True.</span>
+    <span class="k">if</span> <span class="n">only_versioned</span><span class="p">:</span>
+        <span class="c"># Set initial objects to only versioned objects</span>
+        <span class="n">gdb_objects</span> <span class="o">=</span> <span class="n">idx_objects</span>
+        <span class="n">fds_objects</span> <span class="o">=</span> <span class="n">fidx_objects</span>
+
+    <span class="c"># Check to ensure the tuple is not empty.</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">gdb_objects</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">prnt</span><span class="p">(</span><span class="s">&quot;Beginning Rebuilding Indexes for FeatureClasses and&quot;</span>
+        <span class="n">prnt</span><span class="p">(</span><span class="s">&quot;  Beginning Rebuilding Indexes for FeatureClasses and&quot;</span>
              <span class="s">&quot; Tables for user: {0} ... &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">userName</span><span class="p">))</span>
         <span class="k">try</span><span class="p">:</span>
+            <span class="c"># Call Esri tool to rebuild indexes on all gdb_objects</span>
             <span class="n">arcpy</span><span class="o">.</span><span class="n">RebuildIndexes_management</span><span class="p">(</span><span class="n">Workspace</span><span class="p">,</span>
                                             <span class="n">include_system</span><span class="p">,</span>
                                             <span class="n">gdb_objects</span><span class="p">,</span>
                                             <span class="n">delta_only</span><span class="p">)</span>
             <span class="n">success</span><span class="p">()</span>
 
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">fds</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">prnt</span><span class="p">(</span> <span class="s">&quot;Begin Analyzing FeatureDataSets for user:&quot;</span>
-                      <span class="s">&quot; {0} ... &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">userName</span><span class="p">))</span>
+            <span class="c"># Check to ensure fds_objects is not empty.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">fds_objects</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">prnt</span><span class="p">(</span> <span class="s">&quot;  Begin Analyzing FeatureDataSets&quot;</span>
+                      <span class="s">&quot; for user: {0} ... &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">userName</span><span class="p">))</span>
+
+                <span class="c"># Call Esri tool to analyze Featuredatasets in fds_objects.</span>
                 <span class="n">arcpy</span><span class="o">.</span><span class="n">AnalyzeDatasets_management</span><span class="p">(</span><span class="n">Workspace</span><span class="p">,</span>
                                                  <span class="n">include_system</span><span class="p">,</span>
-                                                 <span class="n">fds</span><span class="p">,</span>
+                                                 <span class="n">fds_objects</span><span class="p">,</span>
                                                  <span class="n">analyze_base</span><span class="p">,</span>
                                                  <span class="n">analyze_delta</span><span class="p">,</span>
                                                  <span class="n">analyze_archive</span><span class="p">)</span>
@@ -644,6 +669,8 @@
 
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">failed</span><span class="p">()</span>
+            <span class="c"># The initial tools failed because of a permissions issue.</span>
+            <span class="c"># This will try to rerun the tools with less permissions.</span>
             <span class="k">if</span> <span class="s">&quot;000684&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
                 <span class="k">print</span><span class="p">(</span><span class="s">&quot;  User does not have permissions to work with&quot;</span>
                       <span class="s">&quot; system tables</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
@@ -658,13 +685,13 @@
 
                     <span class="n">success</span><span class="p">()</span>
 
-                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">fds</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">fds_objects</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="n">prnt</span><span class="p">(</span> <span class="s">&quot;  TRYING WITHOUT SYSTEM TABLES!!! Begin&quot;</span>
                               <span class="s">&quot; Analyzing FeatureDataSets for user:&quot;</span>
                               <span class="s">&quot; {0} ... &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">userName</span><span class="p">))</span>
                         <span class="n">arcpy</span><span class="o">.</span><span class="n">AnalyzeDatasets_management</span><span class="p">(</span><span class="n">Workspace</span><span class="p">,</span>
                                                          <span class="s">&quot;NO_SYSTEM&quot;</span><span class="p">,</span>
-                                                         <span class="n">fds</span><span class="p">,</span>
+                                                         <span class="n">fds_objects</span><span class="p">,</span>
                                                          <span class="n">analyze_base</span><span class="p">,</span>
                                                          <span class="n">analyze_delta</span><span class="p">,</span>
                                                          <span class="n">analyze_archive</span><span class="p">)</span>
@@ -741,7 +768,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">False</span>
 
-<span class="c"># parameter check reconcilepost log_folder</span>
+    <span class="c"># parameter check reconcilepost log_folder</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">log_folder</span> <span class="o">==</span> <span class="bp">None</span>
         <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">log_folder</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
         <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">log_folder</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span>
@@ -763,7 +790,7 @@
         <span class="k">if</span> <span class="n">email_ON</span><span class="p">:</span> <span class="n">email</span><span class="p">(</span><span class="n">Subject</span><span class="p">,</span> <span class="n">Msg</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">False</span>
 
-<span class="c"># paramter check reconcilepost target_version</span>
+    <span class="c"># paramter check reconcilepost target_version</span>
     <span class="k">if</span> <span class="n">parent_version</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">parent_version</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">target_version</span> <span class="o">=</span> <span class="s">&quot;sde.default&quot;</span>
     <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">parent_version</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">parent_version</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
@@ -1548,40 +1575,39 @@
 
             <span class="c"># Encode statements as UTF-8</span>
             <span class="n">sql_statement_list</span> <span class="o">=</span> <span class="n">utf8ify</span><span class="p">(</span><span class="n">sql_statement_list</span><span class="p">)</span>
+            <span class="n">sde_return</span> <span class="o">=</span> <span class="bp">True</span>
 
-            <span class="k">print</span><span class="p">(</span><span class="s">&quot;+++++++++++++++++++++++++++++++++++++++++++++</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">sql</span> <span class="ow">in</span> <span class="n">sql_statement_list</span><span class="p">:</span>
                     <span class="c"># Check that item in list is not empty</span>
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="n">sde_return</span> <span class="o">=</span> <span class="bp">True</span>
-                        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Execute SQL Statement: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sql</span><span class="p">))</span>
-                        <span class="k">try</span><span class="p">:</span>
-                            <span class="n">sde_return</span> <span class="o">=</span> <span class="n">sde_conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
-                            <span class="k">print</span><span class="p">(</span><span class="n">sde_return</span><span class="p">)</span>
-                        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-                            <span class="k">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
-                            <span class="n">sde_return</span> <span class="o">=</span> <span class="bp">False</span>
+
+                        <span class="k">print</span><span class="p">(</span><span class="s">&quot;+++++++++++++++++++++++++++++++++++++++++</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+                        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Execute SQL Statement: {0}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sql</span><span class="p">))</span>
+
+                        <span class="n">sde_return</span> <span class="o">=</span> <span class="n">sde_conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+                        <span class="k">print</span><span class="p">(</span><span class="s">&quot;{0}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sde_return</span><span class="p">))</span>
+
                         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sde_return</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
                             <span class="k">print</span><span class="p">(</span><span class="s">&quot;Number of rows returned by query: &quot;</span>
-                                  <span class="s">&quot;{0} rows&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sde_return</span><span class="p">)))</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="k">if</span> <span class="n">sde_return</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span>
-                                <span class="k">print</span><span class="p">(</span><span class="s">&quot;SQL statement: {0} SUCCESS.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sql</span><span class="p">))</span>
-                            <span class="k">elif</span> <span class="n">sde_return</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
-                                <span class="k">print</span><span class="p">(</span><span class="s">&quot;SQL statement: {0} FAILED.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sql</span><span class="p">))</span>
-                        <span class="k">print</span><span class="p">(</span><span class="s">&quot;+++++++++++++++++++++++++++++++++++++++++++++</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+                                  <span class="s">&quot;{0} rows</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sde_return</span><span class="p">)))</span>
+
+                        <span class="k">if</span> <span class="n">sde_return</span><span class="p">:</span>
+                            <span class="k">print</span><span class="p">(</span><span class="s">&quot;SQL statement: {0} SUCCESS.</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sql</span><span class="p">))</span>
+                            <span class="k">print</span><span class="p">(</span><span class="s">&quot;+++++++++++++++++++++++++++++++++++++++++</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+
             <span class="k">return</span> <span class="bp">True</span>
 
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-
-        <span class="n">errstring</span> <span class="o">=</span> <span class="s">&quot;&#39;ascii&#39; codec can&#39;t encode character&quot;</span>
-        <span class="k">if</span> <span class="n">errstring</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">):</span>
-            <span class="k">pass</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;SQL statement: {0} FAILED.</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sql</span><span class="p">))</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;+++++++++++++++++++++++++++++++++++++++++</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+            <span class="n">err</span>  <span class="o">=</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&quot;utf-8&quot;</span><span class="p">)</span>
+            <span class="n">Subject</span> <span class="o">=</span> <span class="s">&quot; ERROR: executesql&quot;</span>
+            <span class="n">Msg</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;An error occurred while running the function&quot;</span>
+                   <span class="s">&quot; executesql !</span><span class="se">\n</span><span class="s"> This is this error that was encountered:&quot;</span>
+                   <span class="s">&quot; {0}.</span><span class="se">\n</span><span class="s"> Please ensure the sql code is correct.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">Msg</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">email_ON</span><span class="p">:</span> <span class="n">email</span><span class="p">(</span><span class="n">Subject</span><span class="p">,</span> <span class="n">Msg</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">False</span>
-
-
 </div>
 <div class="viewcode-block" id="controlservices"><a class="viewcode-back" href="../controlservices.html#RPLib.controlservices">[docs]</a><span class="k">def</span> <span class="nf">controlservices</span><span class="p">(</span><span class="n">Folder</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                     <span class="n">Operation</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -2018,13 +2044,23 @@
     <span class="c"># take the email list and use it to send an email to connected users.</span>
     <span class="n">COMMASPACE</span> <span class="o">=</span> <span class="s">&#39;, &#39;</span>
     <span class="c"># Prepare actual message</span>
-    <span class="n">BODY</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">join</span><span class="p">((</span>
-            <span class="s">&quot;From: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">email_From</span><span class="p">,</span>
-            <span class="s">&quot;To: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span>  <span class="n">COMMASPACE</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">email_To</span><span class="p">),</span>
-            <span class="s">&quot;Subject: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">email_Subject</span> <span class="p">,</span>
-            <span class="s">&quot;&quot;</span><span class="p">,</span>
-            <span class="n">email_Msg</span>
-            <span class="p">),</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="c">#*Deprecated method for joining email elements together</span>
+<span class="c">##    BODY = string.join((</span>
+<span class="c">##            &quot;From: %s&quot; % email_From,</span>
+<span class="c">##            &quot;To: %s&quot; %  COMMASPACE.join(email_To),</span>
+<span class="c">##            &quot;Subject: %s&quot; % email_Subject ,</span>
+<span class="c">##            &quot;&quot;,</span>
+<span class="c">##            email_Msg</span>
+<span class="c">##            ), &quot;\n&quot;)</span>
+
+    <span class="c"># normalize newlines to CR+LF, as required by SMTP</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">((</span><span class="s">&#39;From&#39;</span><span class="p">,</span> <span class="n">email_From</span><span class="p">),</span>
+           <span class="p">(</span><span class="s">&#39;To&#39;</span><span class="p">,</span> <span class="n">COMMASPACE</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">email_To</span><span class="p">)),</span>
+           <span class="p">(</span><span class="s">&#39;Subject&#39;</span><span class="p">,</span> <span class="n">email_Subject</span><span class="p">))</span>
+
+    <span class="n">body</span> <span class="o">=</span> <span class="n">email_Msg</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">)</span>
+
+    <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;</span><span class="se">\r\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">kv</span> <span class="k">for</span> <span class="n">kv</span> <span class="ow">in</span> <span class="n">headers</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\r\n</span><span class="s">&#39;</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="n">body</span>
 
     <span class="c"># Send the mail</span>
     <span class="n">server</span> <span class="o">=</span> <span class="n">smtplib</span><span class="o">.</span><span class="n">SMTP</span><span class="p">(</span><span class="n">email_IP</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">email_Port</span><span class="p">))</span>
@@ -2039,7 +2075,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">password</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="c"># Send the email and exit connection to smtp server</span>
-                <span class="n">server</span><span class="o">.</span><span class="n">sendmail</span><span class="p">(</span><span class="n">email_From</span><span class="p">,</span> <span class="n">email_To</span><span class="p">,</span> <span class="n">BODY</span><span class="p">)</span>
+                <span class="n">server</span><span class="o">.</span><span class="n">sendmail</span><span class="p">(</span><span class="n">email_From</span><span class="p">,</span> <span class="p">[</span><span class="n">email_To</span><span class="p">],</span> <span class="n">msg</span><span class="p">)</span>
                 <span class="n">server</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
             <span class="k">except</span><span class="p">:</span>
                 <span class="k">print</span><span class="p">(</span><span class="s">&quot; Authentication may be required to send emails from this&quot;</span>
@@ -2052,7 +2088,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">server</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">username</span><span class="p">,</span><span class="n">password</span><span class="p">)</span>
             <span class="c"># Send the email and exit connection to smtp server</span>
-            <span class="n">server</span><span class="o">.</span><span class="n">sendmail</span><span class="p">(</span><span class="n">email_From</span><span class="p">,</span> <span class="n">email_To</span><span class="p">,</span> <span class="n">BODY</span><span class="p">)</span>
+            <span class="n">server</span><span class="o">.</span><span class="n">sendmail</span><span class="p">(</span><span class="n">email_From</span><span class="p">,</span> <span class="p">[</span><span class="n">email_To</span><span class="p">],</span> <span class="n">msg</span><span class="p">)</span>
             <span class="n">server</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="k">print</span><span class="p">(</span><span class="s">&quot; Authentication may have failed for this SMTP server.</span><span class="se">\n</span><span class="s">&quot;</span>
@@ -2062,6 +2098,68 @@
                   <span class="s">&quot; are correct.</span><span class="se">\n</span><span class="s"> Also ensure that authentication is required,&quot;</span>
                   <span class="s">&quot; try leaving username and password blank and try again.&quot;</span><span class="p">)</span>
 
+<div class="viewcode-block" id="emaillog"><a class="viewcode-back" href="../emaillog.html#RPLib.emaillog">[docs]</a><span class="k">def</span> <span class="nf">emaillog</span><span class="p">(</span><span class="n">Subject</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Emails the contents of the current log file.**</span>
+<span class="sd">    **Should be run at end of script.**</span>
+<span class="sd">    **Creates a copy of the current log file called LastRun.txt.**</span>
+
+<span class="sd">    ======================  ========  ===============================================================================================================================================================================================================================================  ==========</span>
+<span class="sd">    Parameter                 Type                                      Description                                                                                                                                                                                                     Required</span>
+<span class="sd">    ======================  ========  ===============================================================================================================================================================================================================================================  ==========</span>
+<span class="sd">    **Subject**             String    Path to SDE connection file.                                                                                                                                                                                                                     No</span>
+<span class="sd">    ======================  ========  ===============================================================================================================================================================================================================================================  ==========</span>
+
+<span class="sd">    **Returns: Boolean**</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">Subject</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">Subject</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">SUBJECT</span> <span class="o">=</span> <span class="s">&quot;GIS Detailed Log&quot;</span>
+    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">Subject</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">Subject</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">SUBJECT</span> <span class="o">=</span> <span class="n">Subject</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">Subject</span> <span class="o">=</span> <span class="s">&quot; ERROR: emaillog&quot;</span>
+        <span class="n">Msg</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Invalid expression supplied for parameter Subject !</span><span class="se">\n</span><span class="s">&quot;</span>
+               <span class="s">&quot; The parameter must be of type string.</span><span class="se">\n</span><span class="s">&quot;</span>
+               <span class="s">&quot; Expected: String.</span><span class="se">\n</span><span class="s">&quot;</span>
+               <span class="s">&quot; Received: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Subject</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">Msg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">email_ON</span><span class="p">:</span> <span class="n">email</span><span class="p">(</span><span class="n">Subject</span><span class="p">,</span> <span class="n">Msg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">False</span>
+
+    <span class="k">global</span> <span class="n">ScriptLog</span>
+    <span class="c">#print(ScriptLog)</span>
+    <span class="n">oldfile</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ScriptLog</span><span class="p">)</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ScriptLog</span><span class="p">)</span>
+    <span class="n">lastrun</span> <span class="o">=</span> <span class="s">&quot;LastRun.txt&quot;</span>
+    <span class="n">newfilename</span> <span class="o">=</span> <span class="n">oldfile</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">lastrun</span><span class="p">)</span>
+    <span class="c">#print(newfilename)</span>
+
+
+    <span class="k">if</span> <span class="n">arcpy</span><span class="o">.</span><span class="n">Exists</span><span class="p">(</span><span class="n">ScriptLog</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">arcpy</span><span class="o">.</span><span class="n">Exists</span><span class="p">(</span><span class="n">newfilename</span><span class="p">):</span>
+            <span class="n">arcpy</span><span class="o">.</span><span class="n">Delete_management</span><span class="p">(</span><span class="n">newfilename</span><span class="p">)</span>
+            <span class="n">arcpy</span><span class="o">.</span><span class="n">Copy_management</span><span class="p">(</span><span class="n">oldfile</span><span class="p">,</span><span class="n">newfilename</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">arcpy</span><span class="o">.</span><span class="n">Copy_management</span><span class="p">(</span><span class="n">oldfile</span><span class="p">,</span><span class="n">newfilename</span><span class="p">)</span>
+
+        <span class="c"># Process: Open and Read  script log file contents into MIME Text.</span>
+        <span class="c">#</span>
+        <span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">ScriptLog</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
+        <span class="n">TEXT</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="c"># Process: Format email and include contents from ScriptLog, then send email.</span>
+        <span class="c">#</span>
+        <span class="n">MSG</span> <span class="o">=</span> <span class="s">&quot;Auto generated Message.</span><span class="se">\n</span><span class="s"> GIS Detailed Log.</span><span class="se">\n</span><span class="s">{0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">TEXT</span><span class="p">)</span>
+        <span class="n">email</span><span class="p">(</span><span class="n">SUBJECT</span><span class="p">,</span><span class="n">MSG</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">True</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Logfile does not exist {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">newfilename</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">False</span>
+</div>
 <span class="k">def</span> <span class="nf">catch_errors</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Decorator function to support error handling.&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
