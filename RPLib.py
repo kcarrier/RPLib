@@ -719,7 +719,7 @@ def reconcilepost(Workspace = None,
     else:
         return False
 
-# parameter check reconcilepost log_folder
+    # parameter check reconcilepost log_folder
     if (log_folder == None
         or len(log_folder) == 0
         and type(log_folder) is str
@@ -741,7 +741,7 @@ def reconcilepost(Workspace = None,
         if email_ON: email(Subject, Msg)
         return False
 
-# paramter check reconcilepost target_version
+    # paramter check reconcilepost target_version
     if parent_version is None or len(parent_version) == 0:
         target_version = "sde.default"
     elif type(parent_version) is str and len(parent_version) != 0:
@@ -1526,40 +1526,39 @@ def executesql(Workspace = None, SQLStatement = None,):
 
             # Encode statements as UTF-8
             sql_statement_list = utf8ify(sql_statement_list)
+            sde_return = True
 
-            print("+++++++++++++++++++++++++++++++++++++++++++++\n")
             for sql in sql_statement_list:
                     # Check that item in list is not empty
                     if len(sql) != 0:
-                        sde_return = True
-                        print("Execute SQL Statement: {0}".format(sql))
-                        try:
-                            sde_return = sde_conn.execute(sql)
-                            print(sde_return)
-                        except Exception as err:
-                            print(str(err))
-                            sde_return = False
+
+                        print("+++++++++++++++++++++++++++++++++++++++++\n")
+                        print("Execute SQL Statement: {0}\n".format(sql))
+
+                        sde_return = sde_conn.execute(sql)
+                        print("{0}\n".format(sde_return))
+
                         if isinstance(sde_return, list):
                             print("Number of rows returned by query: "
-                                  "{0} rows".format(len(sde_return)))
-                        else:
-                            if sde_return == True:
-                                print("SQL statement: {0} SUCCESS.".format(sql))
-                            elif sde_return == False:
-                                print("SQL statement: {0} FAILED.".format(sql))
-                        print("+++++++++++++++++++++++++++++++++++++++++++++\n")
+                                  "{0} rows\n".format(len(sde_return)))
+
+                        if sde_return:
+                            print("SQL statement: {0} SUCCESS.\n".format(sql))
+                            print("+++++++++++++++++++++++++++++++++++++++++\n")
+
             return True
 
-    except Exception as err:
-
-        errstring = "'ascii' codec can't encode character"
-        if errstring in str(err):
-            pass
-        else:
-            print(str(err))
+    except Exception as e:
+            print("SQL statement: {0} FAILED.\n".format(sql))
+            print("+++++++++++++++++++++++++++++++++++++++++\n")
+            err  = unicode(e.message).encode("utf-8")
+            Subject = " ERROR: executesql"
+            Msg = ("An error occurred while running the function"
+                   " executesql !\n This is this error that was encountered:"
+                   " {0}.\n Please ensure the sql code is correct.".format(err))
+            print(Msg)
+            if email_ON: email(Subject, Msg)
             return False
-
-
 
 def controlservices(Folder=None,
                     Operation=None,
@@ -1996,13 +1995,23 @@ def email(Subject,Msg):
     # take the email list and use it to send an email to connected users.
     COMMASPACE = ', '
     # Prepare actual message
-    BODY = string.join((
-            "From: %s" % email_From,
-            "To: %s" %  COMMASPACE.join(email_To),
-            "Subject: %s" % email_Subject ,
-            "",
-            email_Msg
-            ), "\n")
+    #*Deprecated method for joining email elements together
+##    BODY = string.join((
+##            "From: %s" % email_From,
+##            "To: %s" %  COMMASPACE.join(email_To),
+##            "Subject: %s" % email_Subject ,
+##            "",
+##            email_Msg
+##            ), "\n")
+
+    # normalize newlines to CR+LF, as required by SMTP
+    headers = (('From', email_From),
+           ('To', COMMASPACE.join(email_To)),
+           ('Subject', email_Subject))
+
+    body = email_Msg.replace("\r\n", "\n").replace("\n", "\r\n")
+
+    msg = '\r\n'.join("%s: %s" % kv for kv in headers) + '\r\n'*2 + body
 
     # Send the mail
     server = smtplib.SMTP(email_IP,int(email_Port))
@@ -2017,7 +2026,7 @@ def email(Subject,Msg):
         if not password:
             try:
                 # Send the email and exit connection to smtp server
-                server.sendmail(email_From, email_To, BODY)
+                server.sendmail(email_From, [email_To], msg)
                 server.quit()
             except:
                 print(" Authentication may be required to send emails from this"
@@ -2030,7 +2039,7 @@ def email(Subject,Msg):
         try:
             server.login(username,password)
             # Send the email and exit connection to smtp server
-            server.sendmail(email_From, email_To, BODY)
+            server.sendmail(email_From, [email_To], msg)
             server.quit()
         except:
             print(" Authentication may have failed for this SMTP server.\n"
@@ -2039,6 +2048,66 @@ def email(Subject,Msg):
                   " administrator to verify the IP address and PORT numbers"
                   " are correct.\n Also ensure that authentication is required,"
                   " try leaving username and password blank and try again.")
+
+def emaillog(Subject=None):
+    """
+    **Emails the contents of the current log file.**
+
+    ======================  ========  ===============================================================================================================================================================================================================================================  ==========
+    Parameter                 Type                                      Description                                                                                                                                                                                                     Required
+    ======================  ========  ===============================================================================================================================================================================================================================================  ==========
+    **Subject**             String    Path to SDE connection file.                                                                                                                                                                                                                     No
+    ======================  ========  ===============================================================================================================================================================================================================================================  ==========
+
+    **Returns: Boolean**
+    """
+
+    if Subject is None or len(Subject) == 0:
+        SUBJECT = "GIS Detailed Log"
+    elif type(Subject) is str and len(Subject) != 0:
+        SUBJECT = Subject
+
+    else:
+        Subject = " ERROR: emaillog"
+        Msg = ("Invalid expression supplied for parameter Subject !\n"
+               " The parameter must be of type string.\n"
+               " Expected: String.\n"
+               " Received: {0}".format(Subject))
+        print(Msg)
+        if email_ON: email(Subject, Msg)
+        return False
+
+    global ScriptLog
+    #print(ScriptLog)
+    oldfile = str(ScriptLog)
+    filename = os.path.basename(ScriptLog)
+    lastrun = "LastRun.txt"
+    newfilename = oldfile.replace(filename,lastrun)
+    #print(newfilename)
+
+
+    if arcpy.Exists(ScriptLog):
+        if arcpy.Exists(newfilename):
+            arcpy.Delete_management(newfilename)
+            arcpy.Copy_management(oldfile,newfilename)
+        else:
+            arcpy.Copy_management(oldfile,newfilename)
+
+        # Process: Open and Read  script log file contents into MIME Text.
+        #
+        fp = open(ScriptLog, 'rb')
+        TEXT = fp.read()
+        fp.close()
+
+        # Process: Format email and include contents from ScriptLog, then send email.
+        #
+        MSG = "Auto generated Message.\n GIS Detailed Log.\n{0}".format(TEXT)
+        email(SUBJECT,MSG)
+        return True
+
+    else:
+        print("Logfile does not exist {0}".format(newfilename))
+        return False
 
 def catch_errors(func):
     """Decorator function to support error handling."""
