@@ -26,8 +26,13 @@ recpost_Log = ""
 ## createVersions method variables
 createVersions_List = []
 
-def Logger(Log_Loc="",):
+## Global log file location
+global ScriptLog
+global f
 
+def Logger(Log_Loc="",):
+    global ScriptLog
+    global f
     DATE = '%Y_%m_%d'
     TIME = '%H_%M%p'
     Script_Log = Log_Loc
@@ -39,6 +44,8 @@ def Logger(Log_Loc="",):
                                               datetime.now().strftime(DATE),
                                               datetime.now().strftime(TIME)))
             f = open(ScriptLog, 'w')
+            f.close
+            f = open(ScriptLog, 'r+')
             sys.stdout = Tee(sys.stdout, f)
         else:
             print("The specified path for storing the log file does not"
@@ -52,6 +59,7 @@ class Tee(object):
     def write(self, obj):
         for f in self.files:
             f.write(obj)
+            f.flush()
 
 def clearworkspacecache(Workspace = None,):
     """
@@ -764,14 +772,15 @@ def reconcilepost(Workspace = None,
             target_version = parent_version
             #print("found target version")
 
-    if len(target_version) == 0:
-        Subject = " ERROR: reconcile and post"
-        Msg = ("Invalid expression supplied for parameter parent_version !\n"
-               " The parent_version specified does not exist or could not"
-               " be found: {0}".format(parent_version))
-        print(Msg)
-        if email_ON: email(Subject, Msg)
-        return False
+    # Deprecated code, does not work with other logic
+    ##    if len(target_version) == 0:
+    ##        Subject = " ERROR: reconcile and post"
+    ##        Msg = ("Invalid expression supplied for parameter parent_version !\n"
+    ##               " The parent_version specified does not exist or could not"
+    ##               " be found: {0}".format(parent_version))
+    ##        print(Msg)
+    ##        if email_ON: email(Subject, Msg)
+    ##        return False
 
     # parameter check reconcilepost edit_versions
     if (versions == None or len(versions) == 0 or versions == "" ):
@@ -1044,7 +1053,7 @@ def truncateappend(SourceObject = None,
                    FieldMappings = None,
                    Subtype = None,):
     """
-    **Truncates and appends data from one object to another.**
+    Truncates and appends data from one object to another.
 
     ======================  =============   ====================================================================================================  ==========
     Parameter                 Type                                      Description                                                                Required
@@ -1083,7 +1092,7 @@ def truncateappend(SourceObject = None,
         failed()
         return False
 
-# parameter check truncate and append SourceObjectCount
+    # parameter check truncate and append SourceObjectCount
     if SourceObjectCount is None:
         SourceCount = 0
     elif SourceObjectCount == "":
@@ -1150,7 +1159,7 @@ def truncateappend(SourceObject = None,
             if email_ON: email(Subject, Msg)
             return False
 
-# parameter check truncate and append ObjectsSchemaTest
+    # parameter check truncate and append ObjectsSchemaTest
     if type(ObjectsSchemaTest) is bool:
         if ObjectsSchemaTest is False:
             SchemaTest = "NO_TEST"
@@ -1165,7 +1174,7 @@ def truncateappend(SourceObject = None,
         if email_ON: email(Subject, Msg)
         return False
 
-# parameter check truncate and append DestUpdateField
+    # parameter check truncate and append DestUpdateField
     if type(DestUpdateField) is str and len(DestUpdateField) != 0:
         prnt(" Checking if DestUpdateField is of type Date...")
         destfields = arcpy.ListFields(Destination)
@@ -1186,6 +1195,10 @@ def truncateappend(SourceObject = None,
                     print(Msg)
                     if email_ON: email(Subject, Msg)
                     return False
+    elif len(DestUpdateField) == 0:
+        DestUpdateField = ""
+    elif (DestUpdateField == None):
+        DestUpdatefield = ""
     else:
         Subject = " ERROR: truncate and append"
         Msg = ("Invalid expression supplied for parameter DestUpdateField !\n"
@@ -1589,9 +1602,9 @@ def controlservices(Folder=None,
 
     **ServerName**          String                                                                                                                        Yes\n
                                             The name or IP address of the server where ArcGIS Server is running.\n
-    **UserName**            Boolean                                                                                                                       Yes\n
+    **UserName**            String                                                                                                                        Yes\n
                                             Specify an administrative user for ArcGIS Server.\n
-    **Password**            Boolean                                                                                                                       Yes\n
+    **Password**            String                                                                                                                        Yes\n
                                             Specify the administrative user password for ArcGIS Server.\n
     ======================  =============   ============================================================================================================  ==========
 
@@ -1608,7 +1621,9 @@ def controlservices(Folder=None,
     serverPort = 6080
 
     folder = Folder
-    stopOrStart = Operation
+    stopOrStart = str(Operation)
+    stopOrStart = stopOrStart.upper()
+    print(stopOrStart)
 
     if string.upper(folder) == "ALL":
         if string.upper(stopOrStart) == "STOP":
@@ -1647,8 +1662,8 @@ def controlservices(Folder=None,
                       " all services in a folder.\n")
 
                 # Check to make sure stop/start parameter is a valid value
-                if [str.upper(stopOrStart) != "START"
-                    and str.upper(stopOrStart) != "STOP"]:
+                if not (stopOrStart.upper() == string.upper("STOP") or
+                        stopOrStart.upper() == string.upper("START")):
                     print(" Invalid STOP/START parameter entered\n")
                     return False
 
@@ -1657,99 +1672,83 @@ def controlservices(Folder=None,
                 #if token == "":
                 if not token:
                     return False
+
+
+                # Construct URL to read folder
+                if str.upper(folder) == "ROOT":
+                    folder = ""
                 else:
+                    folder += "/"
 
-                    # Construct URL to read folder
-                    if str.upper(folder) == "ROOT":
-                        folder = ""
-                    else:
-                        folder += "/"
+                folderURL = "/arcgis/admin/services/" + folder
 
-                    folderURL = "/arcgis/admin/services/" + folder
+                # This request only needs the token and the response formatting parameter
+                params = urllib.urlencode({'token': token, 'f': 'json'})
 
-                    # This request only needs the token and the response formatting parameter
-                    params = urllib.urlencode({'token': token, 'f': 'json'})
+                headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
 
-                    headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
+                # Connect to URL and post parameters
+                httpConn = httplib.HTTPConnection(serverName, serverPort)
+                httpConn.request("POST", folderURL, params, headers)
 
-                    # Connect to URL and post parameters
-                    httpConn = httplib.HTTPConnection(serverName, serverPort)
-                    httpConn.request("POST", folderURL, params, headers)
+                # Read response
+                response = httpConn.getresponse()
+                if (response.status != 200):
+                    httpConn.close()
+                    print(" Could not read folder information.\n")
+                    return False
+                else:
+                    data = response.read()
 
-                    # Read response
-                    response = httpConn.getresponse()
-                    if (response.status != 200):
-                        httpConn.close()
-                        print(" Could not read folder information.\n")
+                    # Check that data returned is not an error object
+                    if not assertJsonSuccess(data):
+                        print(" Error when reading folder"
+                              " information. {0}\n".format(str(data)))
                         return False
                     else:
-                        data = response.read()
+                        print(" Processed folder information successfully."
+                              " Now processing services...\n")
 
-                        # Check that data returned is not an error object
-                        if not assertJsonSuccess(data):
-                            print(" Error when reading folder"
-                                  " information. {0}\n".format(str(data)))
-                            return False
+                    # Deserialize response into Python object
+                    dataObj = json.loads(data)
+                    httpConn.close()
+
+                    # Loop through each service in the folder and stop or start it
+                    for item in dataObj['services']:
+
+                        fullSvcName = item['serviceName'] + "." + item['type']
+
+                        # Construct URL to stop or start service, then make the request
+                        stopOrStartURL = "/arcgis/admin/services/" + folder + fullSvcName + "/" + stopOrStart
+                        httpConn.request("POST", stopOrStartURL, params, headers)
+
+                        # Read stop or start response
+                        stopStartResponse = httpConn.getresponse()
+                        if (stopStartResponse.status != 200):
+                            httpConn.close()
+                            print("Error while executing stop or start. Please check the URL and try again.")
+                            return
                         else:
-                            print(" Processed folder information successfully."
-                                  " Now processing services...\n")
+                            stopStartData = stopStartResponse.read()
 
-                        # Deserialize response into Python object
-                        dataObj = json.loads(data)
+                            # Check that data returned is not an error object
+                            if not assertJsonSuccess(stopStartData):
+                                if str.upper(stopOrStart) == "START":
+                                    print("Error returned when starting service " + fullSvcName + ".")
+                                else:
+                                    print("Error returned when stopping service " + fullSvcName + ".")
+
+                                print(str(stopStartData))
+
+                            else:
+                                print("Service " + fullSvcName + " processed successfully.")
+
                         httpConn.close()
 
-                        # Loop through each service in the folder and stop or
-                        # start it
-                        for item in dataObj['services']:
+                    return
 
-                            fullSvcName = item['serviceName'] + "." + item['type']
 
-                            # Construct URL to stop or start service, then make the request
-                            stopOrStartURL = "/arcgis/admin/services/" + folder + fullSvcName + "/" + stopOrStart
-                            httpConn.request("POST", stopOrStartURL, params, headers)
 
-                            # Read stop or start response
-                            stopStartResponse = httpConn.getresponse()
-                            if (stopStartResponse.status != 200):
-                                httpConn.close()
-                                print(" Error while executing stop or start."
-                                      " Please check the URL and try again.\n")
-                                return False
-                            else:
-                                stopStartData = stopStartResponse.read()
-
-                                # Check that data returned is not an error
-                                # object
-                                if not assertJsonSuccess(stopStartData):
-                                    if str.upper(stopOrStart) == "START":
-                                        print(" Error returned when starting"
-                                              " service {0}.\n"
-                                              "".format(fullSvcName))
-                                        return False
-                                    else:
-                                        print(" Error returned when stopping"
-                                              " service {0}.\n"
-                                              "".format(fullSvcName))
-                                        return False
-
-                                    print(stopStartData)
-
-                                else:
-                                    print("  Service {0} processed"
-                                          " successfully.\n"
-                                          "".format(fullSvcName))
-                                    return True
-
-                            httpConn.close()
-
-                        # Clean Up
-                        #
-                        del username
-                        del password
-                        del serverName
-                        del serverPort
-                        del folder
-                        del stopOrStart
 
 # A function to generate a token given username, password and the adminURL.
 def getToken(username, password, serverName, serverPort):
@@ -2020,13 +2019,24 @@ def email(Subject,Msg):
     password = email_Password
     # Ping the server to do a handshake and authenticate
     server.ehlo()
-    server.starttls()
+
+    # Issue found by Jeff Trimmer at City of Fairfield, OH
+    # Was receiving an error when server.starttls was defined.
+    # Added error handling to try starttls if an error is encountered
+    # pass and continue on and it worked. If more issues are encountered
+    # with this parameter additional error handling will be added at that
+    # time.
+    try:
+        server.starttls()
+    except Exception, e:
+        pass
+
     server.ehlo()
     if not username:
         if not password:
             try:
                 # Send the email and exit connection to smtp server
-                server.sendmail(email_From, [email_To], msg)
+                server.sendmail(email_From, email_To, msg)
                 server.quit()
             except:
                 print(" Authentication may be required to send emails from this"
@@ -2039,7 +2049,7 @@ def email(Subject,Msg):
         try:
             server.login(username,password)
             # Send the email and exit connection to smtp server
-            server.sendmail(email_From, [email_To], msg)
+            server.sendmail(email_From, email_To, msg)
             server.quit()
         except:
             print(" Authentication may have failed for this SMTP server.\n"

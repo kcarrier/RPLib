@@ -19,6 +19,9 @@ other functions or processes that would be useful to the community please share 
 2. 04/11/2014 - Enhanced rebuild_indexes_analyze function to be more efficient when gathering database objects. Thanks to Patricia Moehring for finding this!
 3. 04/14/2014 - Reworked executesql function to have more descriptive error messages. Reworked email function to keep proper formatting of text.
 4. 04/14/2014 - Added emaillog function which can be run at end of script to email contents of current log file. Should be run at the end of a script. Thanks to Patricia Moehring for suggesting this!
+5. 05/02/2014 - Fixed issue with controlservices not looping through folders properly, Thanks to Anthony Pagan and Eric Moody for finding this!
+6. 05/02/2014 - Fixed issue with truncateappend requiring a datefield when it should be optional, Thanks to Anthony Pagan and Eric Moody for finding this!
+7. 05/02/2014 - Fixed issue with email function, error was being thrown when starttls was envoked, added some error trapping and user was then able to send emails, Thanks to Jeff Trimmer for finding this!
 
 ### Documentation
 
